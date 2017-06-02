@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -16,9 +16,10 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.process.ExecResult;
-import org.gradle.process.JavaExecSpec;
 import org.gradle.util.ConfigureUtil;
+import org.gradle.workers.IsolationMode;
+import org.gradle.workers.WorkerConfiguration;
+import org.gradle.workers.WorkerExecutor;
 
 public class WsdlToJava extends DefaultTask {
 
@@ -71,20 +72,17 @@ public class WsdlToJava extends DefaultTask {
     }
 
     private void processWsdl( Wsdl wsdl ) {
-        List<String> arguments = wsImportArgumentsFor( wsdl );
-
-        ExecResult result = getProject().javaexec( new Action<JavaExecSpec>() {
+        getWorkerExecutor().submit( WsImportRunnable.class, new Action<WorkerConfiguration>() {
             @Override
-            public void execute( JavaExecSpec spec ) {
-                spec.setArgs( arguments );
-                spec.setClasspath( jaxwsToolsConfiguration );
-                spec.setMain( "com.sun.tools.ws.WsImport" );
+            public void execute( WorkerConfiguration config ) {
+                config.setDisplayName( "Import WSDL " + wsdl.getName() + " into " + wsdl.getPackageName() );
+                config.setParams( wsImportArgumentsFor( wsdl ) );
+                config.getForkOptions().jvmArgs(
+                    "-Djavax.xml.parsers.SAXParserFactory=com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl" );
+                config.setIsolationMode( IsolationMode.PROCESS );
+                config.classpath( jaxwsToolsConfiguration.getFiles() );
             }
         } );
-
-        if( result.getExitValue() != 0 ) {
-            throw new GradleException( "Error running wsimport, see output for details" );
-        }
     }
 
     private List<String> wsImportArgumentsFor( Wsdl wsdl ) {
@@ -108,5 +106,10 @@ public class WsdlToJava extends DefaultTask {
         }
         arguments.add( wsdlFile.getAbsolutePath() );
         return arguments;
+    }
+
+    @Inject
+    protected WorkerExecutor getWorkerExecutor() {
+        throw new UnsupportedOperationException();
     }
 }

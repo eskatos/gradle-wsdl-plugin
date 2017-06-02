@@ -1,5 +1,5 @@
 group = 'org.codeartisans.gradle'
-version = '0.1'
+version = '0.2'
 ext.pluginId = 'org.codeartisans.gradle.wsdl-tasks'
 
 buildscript {
@@ -16,6 +16,8 @@ repositories {
 }
 
 dependencies {
+  compileOnly 'com.sun.xml.ws:jaxws-tools:2.2.10'
+
   implementation gradleApi()
 
   testImplementation( 'org.spockframework:spock-core:1.0-groovy-2.4' ) {
