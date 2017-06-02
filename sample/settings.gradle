@@ -1,0 +1,7 @@
+rootProject.name = 'acme-soap-clients'
+
+include 'communication',
+        'location',
+        'calculation'
+
+// includeBuild '../plugin'

@@ -1,0 +1,7 @@
+# `org.codeartisans.gradle.wsdl-tasks` plugin
+
+> Yet another Gradle plugin to work with WSDLs
+
+Only contains tasks for now, no source set magic or anything.
+You'll have to wire the tasks yourselves.
+Please have a look at the link:sample[sample project] for a sample build script.

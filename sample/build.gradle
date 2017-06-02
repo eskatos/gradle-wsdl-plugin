@@ -1,0 +1,112 @@
+plugins {
+  id "com.gradle.build-scan" version "1.8"
+  id "org.codeartisans.gradle.wsdl-tasks" version "0.1" apply false
+}
+
+buildScan {
+  licenseAgreementUrl = "https://gradle.com/terms-of-service"
+  licenseAgree = "yes"
+}
+
+import org.codeartisans.gradle.wsdl.*
+
+subprojects {
+  apply plugin: "java-library"
+  apply plugin: "org.codeartisans.gradle.wsdl-tasks"
+
+  repositories {
+    jcenter()
+  }
+}
+
+project( ":communication" ) {
+
+  task generateWsdlClients( type: WsdlToJava ) {
+    wsdls {
+      barcode {
+        wsdl = "../src/wsdl/barcode/barcode.wsdl"
+        packageName = "com.acme.services.barcode"
+      }
+      email {
+        wsdl = "../src/wsdl/email/email.wsdl"
+        packageName = "com.acme.services.email"
+      }
+      fax {
+        wsdl = "../src/wsdl/fax/fax.wsdl"
+        packageName = "com.acme.services.fax"
+      }
+      sms {
+        wsdl = "../src/wsdl/sms/sms.wsdl"
+        packageName = "com.acme.services.sms"
+      }
+    }
+  }
+}
+
+project( ":location" ) {
+  task generateWsdlClients( type: WsdlToJava ) {
+    wsdls {
+      airport {
+        wsdl = "../src/wsdl/airport/airport.wsdl"
+        packageName = "com.acme.services.airport"
+      }
+      country {
+        wsdl = "../src/wsdl/country/country.wsdl"
+        packageName = "com.acme.services.country"
+      }
+      geoip {
+        wsdl = "../src/wsdl/geoip/geoip.wsdl"
+        packageName = "com.acme.services.geoip"
+      }
+      sunsetrise {
+        wsdl = "../src/wsdl/sunsetrise/sunsetrise.wsdl"
+        packageName = "com.acme.services.sunsetrise"
+      }
+      weather {
+        wsdl = "../src/wsdl/weather/weather.wsdl"
+        packageName = "com.acme.services.weather"
+      }
+    }
+  }
+}
+
+project( ":calculation" ) {
+  task generateWsdlClients( type: WsdlToJava ) {
+    wsdls {
+      creditcard {
+        wsdl = "../src/wsdl/creditcard/creditcard.wsdl"
+        packageName = "com.acme.services.creditcard"
+      }
+      currency {
+        wsdl = "../src/wsdl/currency/currency.wsdl"
+        packageName = "com.acme.services.currency"
+      }
+      fixing {
+        wsdl = "../src/wsdl/fixing/fixing.wsdl"
+        packageName = "com.acme.services.fixing"
+      }
+      naics {
+        wsdl = "../src/wsdl/naics/naics.wsdl"
+        packageName = "com.acme.services.naics"
+      }
+      quote {
+        wsdl = "../src/wsdl/quote/quote.wsdl"
+        packageName = "com.acme.services.quote"
+      }
+      statistics {
+        wsdl = "../src/wsdl/statistics/statistics.wsdl"
+        packageName = "com.acme.services.statistics"
+      }
+    }
+  }
+}
+
+
+subprojects { p ->
+  p.sourceSets {
+    main {
+      p.tasks[ compileJavaTaskName ].dependsOn p.tasks[ "generateWsdlClients" ]
+      java.srcDir p.file( "build/generated-sources/generateWsdlClients/java" )
+    }
+  }
+}

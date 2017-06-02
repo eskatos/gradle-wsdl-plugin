@@ -1,0 +1,48 @@
+group = 'org.codeartisans.gradle'
+version = '0.1'
+ext.pluginId = 'org.codeartisans.gradle.wsdl-tasks'
+
+buildscript {
+  repositories { maven { url "https://plugins.gradle.org/m2/" } }
+  dependencies { classpath "com.gradle.publish:plugin-publish-plugin:0.9.7" }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'com.gradle.plugin-publish'
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  implementation gradleApi()
+
+  testImplementation( 'org.spockframework:spock-core:1.0-groovy-2.4' ) {
+    exclude module: 'groovy-all'
+  }
+  testImplementation 'junit:junit:4.12'
+}
+
+gradlePlugin {
+  plugins {
+    wsdlPlugin {
+      id = pluginId
+      implementationClass = 'org.codeartisans.gradle.wsdl.WsdlTasksPlugin'
+    }
+  }
+}
+
+pluginBundle {
+  tags = ["wsdl", "wsimport", "jax-ws"]
+  website = "https://github.com/eskatos/gradle-wsdl-plugin"
+  vcsUrl = "https://github.com/eskatos/gradle-wsdl-plugin"
+  plugins {
+    wsdlPlugin {
+      id = pluginId
+      displayName = 'Gradle WSDL Tasks Plugin'
+      description = 'Gradle WSDL Tasks Plugin'
+    }
+  }
+}
+
