@@ -1,5 +1,5 @@
 group = 'org.codeartisans.gradle'
-version = '0.2'
+version = '0.3'
 ext.pluginId = 'org.codeartisans.gradle.wsdl-tasks'
 
 buildscript {

@@ -77,9 +77,7 @@ public class WsdlToJava extends DefaultTask {
             public void execute( WorkerConfiguration config ) {
                 config.setDisplayName( "Import WSDL " + wsdl.getName() + " into " + wsdl.getPackageName() );
                 config.setParams( wsImportArgumentsFor( wsdl ) );
-                config.getForkOptions().jvmArgs(
-                    "-Djavax.xml.parsers.SAXParserFactory=com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl" );
-                config.setIsolationMode( IsolationMode.PROCESS );
+                config.setIsolationMode( IsolationMode.CLASSLOADER );
                 config.classpath( jaxwsToolsConfiguration.getFiles() );
             }
         } );
