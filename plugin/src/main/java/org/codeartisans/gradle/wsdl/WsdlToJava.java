@@ -4,6 +4,7 @@ import groovy.lang.Closure;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import org.gradle.api.Action;
@@ -97,6 +98,9 @@ public class WsdlToJava extends DefaultTask {
         arguments.add( outputDirectory.getAbsolutePath() );
         arguments.add( "-extension" );
         arguments.add( "-Xnocompile" );
+        if (wsdl.getExtraArgs() != null) {
+            arguments.addAll(Arrays.asList(wsdl.getExtraArgs().split(" ")));
+        }
         if( getProject().getLogger().isDebugEnabled() ) {
             arguments.add( "-Xdebug" );
         } else {

@@ -8,6 +8,7 @@ public class Wsdl implements Named, Serializable {
     private String name;
     private Object wsdl;
     private String packageName;
+    private String extraArgs;
 
     public Wsdl() {}
 
@@ -38,6 +39,14 @@ public class Wsdl implements Named, Serializable {
 
     public void setPackageName( String packageName ) {
         this.packageName = packageName;
+    }
+
+    public String getExtraArgs() {
+        return extraArgs;
+    }
+
+    public void setExtraArgs(String extraArgs) {
+        this.extraArgs = extraArgs;
     }
 
     @Override
